@@ -1,8 +1,9 @@
 package com.paveldejimas.isvestine;
 
 import com.paveldejimas.bazine.ZmogusImp;
+import java.util.Comparator;
 
-public class StatybininkasImp extends ZmogusImp implements Statybininkas {
+public class StatybininkasImp extends ZmogusImp implements Statybininkas, Comparable {
     private int stazas;
     private String issilavinimas;
     private String specializacija;
@@ -55,4 +56,31 @@ public class StatybininkasImp extends ZmogusImp implements Statybininkas {
     public void setAtlyginimas(double atlyginimas) {
         this.atlyginimas = atlyginimas;
     }
+
+    public String toString() {
+        return String.format("%s %s turi %d metų stažą, uždirba %.2f Eur per mėnesį", super.getVardas(),
+                super.getPavarde(), stazas, atlyginimas);
+    }
+
+    @Override
+    public int compareTo(Object statybininkas) {
+        //return super.getVardas().compareTo(((StatybininkasImp)statybininkas).getVardas());
+        return Comparator.comparing(StatybininkasImp::getVardas)
+                .thenComparing(StatybininkasImp::getAtlyginimas).reversed()
+                .compare(this, (StatybininkasImp) statybininkas);
+    }
+
+    public static Comparator<StatybininkasImp> nameComparator = new Comparator<StatybininkasImp>() {
+        @Override
+        public int compare(StatybininkasImp o1, StatybininkasImp o2) {
+            return o1.getVardas().compareTo(o2.getVardas());
+        }
+    };
+
+    public static Comparator<StatybininkasImp> wageComparator = new Comparator<StatybininkasImp>() {
+        @Override
+        public int compare(StatybininkasImp o1, StatybininkasImp o2) {
+            return (int)(o2.getAtlyginimas() - o1.getAtlyginimas());
+        }
+    };
 }
